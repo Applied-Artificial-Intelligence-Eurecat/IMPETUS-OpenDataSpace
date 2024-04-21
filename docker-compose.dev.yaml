@@ -1,0 +1,83 @@
+services:
+  access-module:
+    build: ./AccessModule
+    container_name: impteus-access-module
+  postgres:
+    image: timescale/timescaledb-ha:pg15-latest
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      timeout: 10s
+      interval: 30s
+      retries: 5
+      start_period: 15s
+    environment:
+      - POSTGRES_PASSWORD=p455w0rdD3v3l0p
+    volumes:
+      - postgres-data:/home/postgres/pgdata/data:z
+    networks:
+      default:
+        aliases:
+          - postgres
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50M"
+        max-file: "18"
+  mongo-db:
+    image: mongo:3.6
+    container_name: impetus-fiware-mongo
+    ports:
+      - "27017:27017" 
+    command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-db:/data/db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20M"
+        max-file: "2"
+    networks:
+      default:
+        aliases:
+          - mongodb
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  fiware-orion:
+    image: fiware/orion-ld:1.1.2
+    container_name: impetus-fiware-orion
+    ports:
+      - "1026:1026"
+    environment:
+      - ORIONLD_TROE=FALSE
+      - ORIONLD_TROE_USER=orion
+      - ORIONLD_TROE_PWD=Str0ngPassw0rd
+      - ORIONLD_TROE_HOST=impetus-timescale
+      - ORIONLD_MONGO_HOST=mongo-db
+    links:
+      - mongo-db
+    networks:
+      default:
+        aliases:
+          - orion
+    depends_on:
+      mongo-db:
+        condition: service_healthy
+    command: -dbhost mongodb -logLevel DEBUG
+    healthcheck:
+      test: curl --fail -s http://impetus-orion:1026/version || exit 1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20M"
+        max-file: "2"
+
+volumes:
+  mongo-db:
+  postgres-data:
