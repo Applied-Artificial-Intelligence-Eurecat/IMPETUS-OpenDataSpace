@@ -1,14 +1,14 @@
-from schemas import Token, TokenData, User, UserInDB
-from typing import Optional
-from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordBearer
-from datetime import datetime, timedelta
-from sqlalchemy.orm import Session
-from models import User as DBUser
-
-from typing import Annotated
 from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.orm import Session
 from jose import JWTError, jwt
+from datetime import datetime, timedelta
+from typing import Optional, Annotated
+from passlib.context import CryptContext
+
+from schemas import TokenData, User
+from models import User as DBUser
+from repository.database import get_db
 
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -17,7 +17,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -28,7 +28,6 @@ def get_password_hash(password):
 
 def authenticate_user(database: Session, username: str, password: str):
     user: DBUser = get_user(database, username)
-    print(user.hashed_password)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -47,7 +46,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-async def get_current_user(database, token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(database: Annotated[Session, Depends(get_db)], token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -73,6 +72,6 @@ def get_user(db: Session, username: str):
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)]
 ):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+print(get_password_hash("hola123"))

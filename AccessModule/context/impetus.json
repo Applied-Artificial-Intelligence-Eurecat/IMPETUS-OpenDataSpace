@@ -1,0 +1,13 @@
+{
+    "@vocab": "http://impetus.eurecat.org/",
+    "@context":{
+        "id":"@id",
+        "type":"@type",
+        "catalog_type":"http://impetus.eurecat.org/catalog_type",
+        "catalog_context":"http://impetus.eurecat.org/catalog_context",
+        "entities_structure":"http://impetus.eurecat.org/entities_structure"
+    },
+    "@graph":{
+
+    }
+}

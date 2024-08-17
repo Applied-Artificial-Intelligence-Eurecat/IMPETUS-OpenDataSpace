@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: timescale/timescaledb:latest-pg16
+    image: timescale/timescaledb-postgis:2.2.1-pg13
     ports:
       - "5432:5432"
     healthcheck:
@@ -10,9 +10,9 @@ services:
       retries: 5
       start_period: 15s
     environment:
-      - POSTGRES_PASSWORD=1mp3tus4!
+      - POSTGRES_PASSWORD=p455w0rdD3v3l0p
     volumes:
-      - postgres-data:/var/lib/postgresql/data:z
+      - postgres-data:/home/postgres/pgdata/data:z
     networks:
       default:
         aliases:
@@ -54,7 +54,7 @@ services:
     environment:
       - ORIONLD_TROE=FALSE
       - ORIONLD_TROE_USER=orion
-      - ORIONLD_TROE_PWD=${ORION}
+      - ORIONLD_TROE_PWD=Str0ngPassw0rd
       - ORIONLD_TROE_HOST=impetus-timescale
       - ORIONLD_MONGO_HOST=mongo-db
     links:
@@ -68,7 +68,7 @@ services:
         condition: service_healthy
     command: -dbhost mongodb -logLevel DEBUG
     healthcheck:
-      test: curl --fail -s http://localhost:1026/version || exit 1
+      test: curl --fail -s http://impetus-orion:1026/version || exit 1
     logging:
       driver: "json-file"
       options:
@@ -76,15 +76,21 @@ services:
         max-file: "2"
   quantumleap:
     container_name: impetus-fiware-quantumleap
-    image: orchestracities/quantumleap:edge
+    #image: orchestracities/quantumleap:edge
+    image: ods/quantumleap
     ports:
       - "8668:8668"
     environment:      
+      # - LOGLEVEL=debug
+      # - CRATE_HOST=crate
+      # - CACHE_QUERIES=false
+      # - QL_DEFAULT_DB=quantumleap
+      # - KEEP_RAW_ENTITY=false
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_DB_NAME=quantumleap
       - POSTGRES_DB_USER=postgres
-      - POSTGRES_DB_PASS=1mp3tus4!
+      - POSTGRES_DB_PASS=p455w0rdD3v3l0p
       - QL_CONFIG=/quantumleap.yaml
     networks:
       default:
@@ -96,36 +102,36 @@ services:
         max-size: "20M"
         max-file: "2"
     volumes:
-      - ./quantumleap.yaml:/quantumleap.yaml
-
+      - ./quantum.yaml:/quantumleap.yaml
+  
   platform:
     build: 
       context: ./AccessModule/
       dockerfile: Dockerfile
     container_name: impetus-accessmodule
+    develop:
+      watch: 
+        - path: ./AccessModule/src
+          action: rebuild
     environment:
       - PG_USERNAME=postgres
-      - PG_PASSWORD=1mp3tus4!
+      - PG_PASSWORD=p455w0rdD3v3l0p
       - PG_HOSTNAME=postgres
       - PG_PORT=5432
       - PG_DATABASE=postgres
       - ORION_URL=http://orion:1026
       - FIWARE_FILES_PATH=/app/files
       - FIWARE_CONTEXT_PATH=/app/context
-      - HOSTNAME=http://84.88.76.44/
-      - QUANTUMLEAD_NOTIFY=http://quantumleap:8668/v2/notify
-      - ORION_CONTEXT=http://accessmodule/context/impetus.json
+      - HOSTNAME=http://84.88.76.44/ 
     volumes:
-      - ./files:/app/files
-      - ./context:/app/context
+      - files:/app/files
+      - context:/app/context
     ports:
-      - "80:80"
+      - "8000:80"
     networks:
       default:
         aliases:
           - accessmodule
-    healthcheck:
-      test: curl --fail -s http://localhost/ || exit 1
     logging:
       driver: "json-file"
       options:
@@ -138,3 +144,5 @@ volumes:
   mongo-db:
   crate-data:
   postgres-data:
+  files:
+  context:

@@ -9,5 +9,8 @@ uvicorn==0.23.1
 passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
 sqlalchemy==2.0.20
+Markdown==3.6
+requests==2.31.0
 # keras==2.14.0
 # tensorflow==2.14.0
+gunicorn==22.0.0
