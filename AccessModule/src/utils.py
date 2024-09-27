@@ -15,7 +15,9 @@ def get_internal_entity_id(full_entity_id: str):
     patron = r':([^:]+:[^:]+)$'
     id_splited = re.search(patron, full_entity_id)
     return id_splited.group(1) if id_splited else None
- 
+def get_user_from_fiware_id(full_id:str):
+    keywords =  full_id.split(":")
+    return keywords[-1]
 def get_id_from_fiware_id(full_id:str):
     keywords =  full_id.split(":")
     return ':'.join(keywords[-2:])
@@ -25,6 +27,10 @@ def get_owner_from_fiware_id(full_id:str):
 def get_entity_and_catalog_from_fiware_id(full_id:str):
     keywords =  full_id.split(":")
     return ':'.join(keywords[-4:-2]), ':'.join(keywords[-2:])
+
+def get_full_user_id(user: str = None) -> str:
+    return "{}:{}:{}".format(config.ORION_ENTITY_PREFIX, config.USER_ENTITY, user)
+
 
 def get_full_catalog_id(catalog_id: str = None, catalog_name: str = None, catalog_owner: str = None) -> str:
     if catalog_owner and catalog_name:

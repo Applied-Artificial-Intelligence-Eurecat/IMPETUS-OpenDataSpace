@@ -35,6 +35,7 @@ def get_specific_entity(entity_full_id: str):
 
 def get_entity(type_id: str, method: str = "keyValues", entities: list[str] = None, fields: list[str] = ['*'], filters: dict = {}):
     url = config.ORION_URL + config.ORION_PATH_GET
+    headers = {"Link": f'<{config.FIWARE_CONTEXT}>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'}
 
     params = []
     params.append(("type", type_id))
@@ -46,7 +47,7 @@ def get_entity(type_id: str, method: str = "keyValues", entities: list[str] = No
         params.append(("q", "name~=[" + ']|['.join(entities) + ']'))
     # for filter in filters:
     #     params.app
-    response = requests.get(url=url, params=params)
+    response = requests.get(url=url, params=params, headers=headers)
     return None if not response.ok else response
 
 def query_entity(type_id: str, entity_patterns:list[str], attributes: list[str] = None):

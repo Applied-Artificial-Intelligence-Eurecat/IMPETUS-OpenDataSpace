@@ -123,7 +123,7 @@ file:           table.csv
 }
 ```
 
-You can find more information about the available endpoints and calls in the Swagger documentation.
+You can find more information about the available endpoints and calls in the OpenAPI documentation.
 
 ### Retrieve Data
 The available data can be retrieved through the `/query` endpoint.
@@ -234,18 +234,18 @@ You need to install the Python dependencies. You can use the `requirements.txt` 
 python3 -m pip install -r AccessModule/requirements.txt
 ```
 
-### Execution
+### Deploy
 All resources beyond the API are orchestrated via Docker Compose to facilitate the deployment and development of Open Data Space tools.
 
 For this, Docker must be running, and you can deploy it using the command:
 ```
-docker compose up -f docker-compose.dev.yaml
+docker compose -f docker-compose.dev.yaml up -d
 ```
 For Mac M1/M2 or other devices using ARM architectures, you should deploy using the `docker-compose.dev.mac.yaml` file:
 
 
 ```
-docker compose up -f docker-compose.dev.mac.yaml
+docker compose -f docker-compose.dev.mac.yaml up -d
 ```
 
 To run the API in development, it is recommended to use the following command via Uvicorn:
@@ -254,3 +254,20 @@ cd AccessModule/src
 uvicorn main:app --reload
 ```
 
+The configuration is provideded though system env variables, so you will need to configure it.
+
+A default configuration to deploy the AccessModule in local can be achieved by:
+
+```sh
+export PG_USERNAME=postgres
+export PG_PASSWORD=p455w0rdD3v3l0p
+export PG_HOSTNAME=localhost
+export PG_PORT=5432
+export PG_DATABASE=postgres
+export ORION_URL=http://localhost:1026
+export ORION_CONTEXT=http://host.docker.internal:8000/context/impetus.json
+export FIWARE_FILES_PATH=../files
+export FIWARE_CONTEXT_PATH=../context
+export QUANTUM_LEAD_NOTIFY=http://host.docker.internal:8668/v2/notify
+export HOSTNAME=accessmodule
+```

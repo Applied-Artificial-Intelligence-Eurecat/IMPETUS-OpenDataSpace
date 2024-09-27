@@ -1,27 +1,4 @@
 services:
-  postgres:
-    image: timescale/timescaledb:latest-pg16
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
-      timeout: 10s
-      interval: 30s
-      retries: 5
-      start_period: 15s
-    environment:
-      - POSTGRES_PASSWORD=1mp3tus4!
-    volumes:
-      - postgres-data:/var/lib/postgresql/data:z
-    networks:
-      default:
-        aliases:
-          - postgres
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50M"
-        max-file: "18"
   mongo-db:
     image: mongo:3.6
     container_name: impetus-fiware-mongo

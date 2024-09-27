@@ -1,27 +1,4 @@
 services:
-  postgres:
-    image: timescale/timescaledb-postgis:2.2.1-pg13
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
-      timeout: 10s
-      interval: 30s
-      retries: 5
-      start_period: 15s
-    environment:
-      - POSTGRES_PASSWORD=p455w0rdD3v3l0p
-    volumes:
-      - postgres-data:/home/postgres/pgdata/data:z
-    networks:
-      default:
-        aliases:
-          - postgres
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50M"
-        max-file: "18"
   mongo-db:
     image: mongo:3.6
     container_name: impetus-fiware-mongo
@@ -81,11 +58,6 @@ services:
     ports:
       - "8668:8668"
     environment:      
-      # - LOGLEVEL=debug
-      # - CRATE_HOST=crate
-      # - CACHE_QUERIES=false
-      # - QL_DEFAULT_DB=quantumleap
-      # - KEEP_RAW_ENTITY=false
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_DB_NAME=quantumleap
