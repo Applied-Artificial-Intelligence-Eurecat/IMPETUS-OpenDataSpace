@@ -22,7 +22,7 @@ services:
       options:
         max-size: "50M"
         max-file: "18"
-        
+
   mongo-db:
     image: mongo:3.6
     container_name: impetus-fiware-mongo
@@ -102,7 +102,7 @@ services:
   platform:
     build: 
       context: ./AccessModule/
-      dockerfile: Dockerfile
+      dockerfile: ./docker/Dockerfile
     container_name: impetus-accessmodule
     environment:
       - PG_USERNAME=postgres

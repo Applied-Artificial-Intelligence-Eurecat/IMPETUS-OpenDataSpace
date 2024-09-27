@@ -103,7 +103,7 @@ services:
   platform:
     build: 
       context: ./AccessModule/
-      dockerfile: Dockerfile
+      dockerfile: ./docker/Dockerfile
     container_name: impetus-accessmodule
     develop:
       watch: 
