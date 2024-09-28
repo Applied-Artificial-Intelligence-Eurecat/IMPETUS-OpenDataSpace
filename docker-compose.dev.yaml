@@ -10,7 +10,7 @@ services:
       retries: 5
       start_period: 15s
     environment:
-      - POSTGRES_PASSWORD=p455w0rdD3v3l0p
+      - POSTGRES_PASSWORD=f1wAr3Imp3tu5
     volumes:
       - postgres-data:/home/postgres/pgdata/data:z
     networks:
@@ -85,7 +85,7 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_DB_NAME=quantumleap
       - POSTGRES_DB_USER=postgres
-      - POSTGRES_DB_PASS=1mp3tus4!
+      - POSTGRES_DB_PASS=f1wAr3Imp3tu5
       - QL_CONFIG=/quantumleap.yaml
     networks:
       default:
@@ -106,7 +106,7 @@ services:
     container_name: impetus-accessmodule
     environment:
       - PG_USERNAME=postgres
-      - PG_PASSWORD=1mp3tus4!
+      - PG_PASSWORD=f1wAr3Imp3tu5
       - PG_HOSTNAME=postgres
       - PG_PORT=5432
       - PG_DATABASE=postgres
@@ -115,7 +115,7 @@ services:
       - FIWARE_CONTEXT_PATH=/app/context
       - HOSTNAME=http://84.88.76.44/
       - QUANTUMLEAD_NOTIFY=http://quantumleap:8668/v2/notify
-      - ORION_CONTEXT=http://accessmodule/context/impetus.json
+      - ORION_CONTEXT=http://84.88.76.44/context/impetus.json
     volumes:
       - ./files:/app/files
       - ./context:/app/context
