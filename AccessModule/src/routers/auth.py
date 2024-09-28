@@ -28,7 +28,7 @@ auth_router = APIRouter()
 @auth_router.post("/register", response_model=Token, tags=["Authentication"])
 async def register_new_user(
     new_user: UserRequest,  # Define el esquema del nuevo usuario
-    current_user: Annotated[User, Depends(get_current_active_user)],
+#    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     """
     Register a new user (accessible only to authenticated users).
