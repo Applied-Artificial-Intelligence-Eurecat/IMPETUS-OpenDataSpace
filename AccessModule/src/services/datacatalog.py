@@ -81,7 +81,7 @@ def update_catalog(catalog_id: str, datacatalog: DataCatalogBase, current_user: 
             raise DataCatalogUpdateError(config.C400_DATACATALOG_TYPE_CHANGED.format(current_datacatalog.type, datacatalog.type))
         
         catalog = DataCatalogCreate(**datacatalog.model_dump(), id=current_datacatalog.id, owner=current_datacatalog.owner)
-        result = fiware_repository.send_entity([catalog.datacatalog_to_fiawre()])
+        result = fiware_repository.send_entity([catalog.datacatalog_to_fiware()])
         
         if not result:
             raise ODSException("Failed to update catalog in Fiware")
