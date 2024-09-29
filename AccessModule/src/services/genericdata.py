@@ -45,6 +45,7 @@ def insert_data(entry: GeneralEntityRequest, user: str) -> str:
         entity = FiwareEntity(
             id=utils.get_entity_id(entry.datacatalog_id, user, entry.id),
             type=entry.datacatalog_id,
+            tags=entry.tags,
             entity_values=[]
         )
 
