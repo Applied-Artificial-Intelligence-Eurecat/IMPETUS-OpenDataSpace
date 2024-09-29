@@ -118,7 +118,7 @@ services:
       - ORION_URL=http://orion:1026
       - FIWARE_FILES_PATH=/app/files
       - FIWARE_CONTEXT_PATH=/app/context
-      - HOSTNAME=http://84.88.76.44/ 
+      - HOSTNAME=http://84.88.76.44
     volumes:
       - files:/app/files
       - context:/app/context
