@@ -58,6 +58,7 @@ def insert_data(entrydata: DictReader, catalog_id: str, entity: str, user: str) 
     entity = FiwareEntity(
         id=utils.get_entity_id(catalog_id, user, entity), 
         type=catalog_id, 
+        tags=[],
         entity_values=[]
     )
     

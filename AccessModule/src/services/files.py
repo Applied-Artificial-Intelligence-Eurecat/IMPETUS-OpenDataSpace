@@ -51,6 +51,7 @@ def insert_data(file: BinaryIO, filename: str, datacatalog_name: str, entity_nam
         entity = FiwareEntity(
             id=utils.get_entity_id(datacatalog_name, user, entity_name),
             type=datacatalog_name,
+            tags=[],
             entity_values=[]
         )
 

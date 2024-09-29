@@ -56,7 +56,8 @@ def insert_data(catalog_name: str, entry: TimeSeriesEntry, user: str) -> Optiona
     # Create the Fiware entity for this timeseries data
     entity = FiwareEntity(
         id=utils.get_entity_id(catalog_name, user, entry.id), 
-        type=catalog_name, 
+        type=catalog_name,
+        tags=[],
         entity_values=[]
     )
     
