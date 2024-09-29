@@ -68,7 +68,6 @@ async def upload_general_data(
         HTTPException: If there is an error during the data insertion, a 400 error is raised.
     """
     try:
-        print(form_data)
         service_genericdata.insert_data(form_data, current_user.username)
     except ODSException as ex:
         raise HTTPException(status_code=400, detail=ex.args)
