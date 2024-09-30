@@ -78,20 +78,19 @@ def get_data(query: QueryRequest) -> Optional[Dict[str, Any]]:
     try:
         if query.include_context:
             response = query_entity(type_id=query.catalog_id, entity_patterns=query.entities, attributes=query.fields)
-            response = response.json() if response else None
-            for entity in response:
-                entity["id"] = utils.get_id_from_fiware_id(entity["id"])
-                entity["https://uri.etsi.org/ngsi-ld/default-context/data_catalog"]["value"] = entity["type"]
-                entity.pop("type")
         else:
             
             response = get_entity(type_id=query.catalog_id, entities=query.entities, fields=query.fields)
-            response = response.json() if response else None
+        response = response.json() if response else None
+        if response:
             for entity in response:
                 entity["id"] = utils.get_id_from_fiware_id(entity["id"])
-                entity["datacatalog"] = entity["type"]
+                if "data_catalog" in entity:
+                    entity["data_catalog"] = entity["type"]
+                elif "https://uri=etsi=org/ngsi-ld/default-context/data_catalog" in entity:
+                    entity["https://uri=etsi=org/ngsi-ld/default-context/data_catalog"]["value"] = entity["type"]
                 entity.pop("type")
 
-        return response.json() if response else None
+        return response if response else None
     except Exception as e:
         raise exceptions.ODSException(f"Error retrieving data: {str(e)}")
