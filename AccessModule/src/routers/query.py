@@ -44,13 +44,13 @@ async def fetch_data(
     try:
         # Get the catalog based on the provided catalog ID
         datacatalog: DataCatalogCreate = service_datacatalog.get_catalog(form_data.catalog_id)
-
+        if not datacatalog:
+            raise HTTPException(status_code=404, detail="Data catalog not found")
         # Handle data fetching based on the type of catalog
         if datacatalog.type in [TypeCatalog.GENERIC, TypeCatalog.TABLE, TypeCatalog.FILE]:
-            data = service_genericdata.get_data(form_data)
+            data = service_genericdata.get_data(form_data, datacatalog)
         elif datacatalog.type == TypeCatalog.TIMESERIES:
             data = service_timeseries.get_data(form_data)
-
     except DataCatalogNotFound as ex:
         # Raise HTTP 400 error if the catalog is not found
         raise HTTPException(status_code=400, detail=ex.args)

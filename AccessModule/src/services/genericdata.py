@@ -65,7 +65,7 @@ def insert_data(entry: GeneralEntityRequest, user: str) -> str:
     except Exception as e:
         raise exceptions.ODSException(f"Error inserting data: {str(e)}")
 
-def get_data(query: QueryRequest) -> Optional[Dict[str, Any]]:
+def get_data(query: QueryRequest, datacatalog: DataCatalogCreate) -> Optional[Dict[str, Any]]:
     """
     Retrieve data from a Fiware entity based on a query request.
 
@@ -76,19 +76,15 @@ def get_data(query: QueryRequest) -> Optional[Dict[str, Any]]:
         Optional[Dict[str, Any]]: The retrieved data in JSON format, or None if the query fails.
     """
     try:
-        if query.include_context:
-            response = query_entity(type_id=query.catalog_id, entity_patterns=query.entities, attributes=query.fields)
-        else:
-            
-            response = get_entity(type_id=query.catalog_id, entities=query.entities, fields=query.fields)
+        response = get_entity(type_id=query.catalog_id, entities=query.entities, fields=query.fields)
         response = response.json() if response else None
         if response:
             for entity in response:
                 entity["id"] = utils.get_id_from_fiware_id(entity["id"])
-                if "data_catalog" in entity:
-                    entity["data_catalog"] = entity["type"]
-                elif "https://uri.etsi.org/ngsi-ld/default-context/data_catalog" in entity:
-                    entity["https://uri.etsi.org/ngsi-ld/default-context/data_catalog"]["value"] = entity["type"]
+                if query.include_context:
+                    for property in datacatalog.catalog_context:
+                        entity[property.context_key] = property.context_value
+                entity["data_catalog"] = entity["type"]
                 entity.pop("type")
 
         return response if response else None
