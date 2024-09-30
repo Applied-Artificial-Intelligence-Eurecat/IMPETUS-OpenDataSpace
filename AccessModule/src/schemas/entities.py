@@ -29,4 +29,5 @@ class QueryRequest(BaseModel):
     entities: List[str]
     fields: List[str]
     time_filter: Optional[TimeFilter] = None
+    include_context: bool = True
     output: OutputFormat = OutputFormat.CSV

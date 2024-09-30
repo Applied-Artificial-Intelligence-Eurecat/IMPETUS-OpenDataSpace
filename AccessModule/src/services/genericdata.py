@@ -12,7 +12,7 @@ from typing import Optional, Any, Dict
 from schemas import (TypeCatalog, GeneralEntityRequest, 
                      FiwareEntity, FiwareProperty, QueryRequest, 
                      DataCatalogCreate, OutputFormat)
-from repository.fiware import send_entity, query_entity
+from repository.fiware import send_entity, query_entity, get_entity
 import utils 
 import services.datacatalog as services
 import exceptions
@@ -76,7 +76,10 @@ def get_data(query: QueryRequest) -> Optional[Dict[str, Any]]:
         Optional[Dict[str, Any]]: The retrieved data in JSON format, or None if the query fails.
     """
     try:
-        response = query_entity(type_id=query.catalog_id, entity_patterns=query.entities, attributes=query.fields)
+        if query.include_context:
+            response = query_entity(type_id=query.catalog_id, entity_patterns=query.entities, attributes=query.fields)
+        else:
+            response = get_entity(type_id=query.catalog_id, entities=query.entities, fields=query.fields)
         return response.json() if response else None
     except Exception as e:
         raise exceptions.ODSException(f"Error retrieving data: {str(e)}")

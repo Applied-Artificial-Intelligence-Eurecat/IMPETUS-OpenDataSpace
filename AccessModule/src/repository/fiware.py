@@ -52,6 +52,7 @@ def get_entity(type_id: str, method: str = "keyValues", entities: list[str] = No
 
 def query_entity(type_id: str, entity_patterns:list[str], attributes: list[str] = None):
     url = config.ORION_URL + config.ORION_PATH_QUERY
+    headers = {"Link": f'<{config.FIWARE_CONTEXT}>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'}
     body = {
        
     }
@@ -71,5 +72,6 @@ def query_entity(type_id: str, entity_patterns:list[str], attributes: list[str] 
         ]
     if attributes and len(attributes) > 0:
         body["attrs"] = attributes 
-    response = requests.post(url=url, json=body)
+    print(body)
+    response = requests.post(url=url, json=body, headers=headers)
     return None if not response.ok else response
