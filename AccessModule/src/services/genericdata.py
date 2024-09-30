@@ -87,8 +87,8 @@ def get_data(query: QueryRequest) -> Optional[Dict[str, Any]]:
                 entity["id"] = utils.get_id_from_fiware_id(entity["id"])
                 if "data_catalog" in entity:
                     entity["data_catalog"] = entity["type"]
-                elif "https://uri=etsi=org/ngsi-ld/default-context/data_catalog" in entity:
-                    entity["https://uri=etsi=org/ngsi-ld/default-context/data_catalog"]["value"] = entity["type"]
+                elif "https://uri.etsi.org/ngsi-ld/default-context/data_catalog" in entity:
+                    entity["https://uri.etsi.org/ngsi-ld/default-context/data_catalog"]["value"] = entity["type"]
                 entity.pop("type")
 
         return response if response else None
