@@ -5,7 +5,7 @@ a Fiware-based repository and handle various exceptions related to data catalogs
 """
 
 from typing import List, Optional, Any
-from schemas import DataCatalogCreate, DataCatalogBase, TypeCatalog, OrionSubscriptionCreate
+from schemas import DataCatalogCreate, DataCatalogBase, TypeCatalog, OrionSubscriptionCreate, CatalogQueryRequest
 from utils import get_full_catalog_id, get_full_subscription_id, get_internal_catalog_id, get_full_user_id
 from exceptions import DataCatalogExists, DataCatalogNotFound, DataCatalogUpdateError, FiwareException, ODSPermissionException, ODSException
 import config
@@ -24,9 +24,12 @@ def get_catalog(catalog_id: str) -> DataCatalogCreate:
         raise ODSException(f"Error retrieving catalog: {str(e)}")
 
 
-def get_catalogs(request: Optional[Any] = None) -> List[DataCatalogCreate]:
+def get_catalogs(request: CatalogQueryRequest = None) -> List[DataCatalogCreate]:
     try:
-        query_response = fiware_repository.get_entity(config.CATALOG_ENTITY, method=None)
+        if request:
+            query_response = fiware_repository.get_entity(config.CATALOG_ENTITY, method= None, entities=request.filter.id)
+        else:
+            query_response = fiware_repository.get_entity(config.CATALOG_ENTITY, method= None)
         if query_response:
             return [DataCatalogCreate.from_fiware(data) for data in query_response.json()]
         return []

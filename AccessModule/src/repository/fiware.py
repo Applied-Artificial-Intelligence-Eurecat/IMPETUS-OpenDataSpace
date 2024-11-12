@@ -37,6 +37,7 @@ def get_entity(type_id: str, method: str = "keyValues", entities: list[str] = No
     url = config.ORION_URL + config.ORION_PATH_GET
     headers = {"Link": f'<{config.FIWARE_CONTEXT}>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'}
 
+    ##TODO check ngsi-ld v1 entities filtering and PAGINATION
     params = []
     params.append(("type", type_id))
     if method:

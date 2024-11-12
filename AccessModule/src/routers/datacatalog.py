@@ -10,7 +10,6 @@ the user's permissions.
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 from typing import Annotated, Optional
-from sqlalchemy.orm import Session
 
 import config
 from services.auth import get_current_active_user
@@ -21,7 +20,7 @@ from exceptions import (
     DataCatalogUpdateError, 
     DataCatalogNotFound
 )
-from schemas import User, DataCatalogBase, DataCatalogCreate
+from schemas import User, DataCatalogBase, DataCatalogCreate, CatalogQueryRequest, CatalogQueryResponse
 
 # APIRouter object to define all routes for Data Catalogs
 datacatalog_router = APIRouter()
@@ -135,7 +134,7 @@ async def delete_datacatalog(
 
 
 @datacatalog_router.post("/page", tags=["Data Catalog"])
-async def page_catalog(query: dict):
+async def page_catalog(query: CatalogQueryRequest) -> CatalogQueryResponse:
     """
     Retrieve multiple Data Catalogs using a query. Pagination is supported.
 
@@ -151,7 +150,8 @@ async def page_catalog(query: dict):
             - 404 if no catalogs are found.
     """
     try:
-        return service.get_catalogs()
+        catalogs = service.get_catalogs(query)
+        return CatalogQueryResponse(size=len(catalogs), entries=catalogs)
     except ODSPermissionException as ex:
         raise HTTPException(status_code=403, detail=ex.args)
     except DataCatalogNotFound as ex:

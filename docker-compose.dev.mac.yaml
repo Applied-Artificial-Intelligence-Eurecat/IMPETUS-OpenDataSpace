@@ -75,30 +75,30 @@ services:
       options:
         max-size: "20M"
         max-file: "2"
-  quantumleap:
-    container_name: impetus-fiware-quantumleap
-    #image: orchestracities/quantumleap:edge
-    image: ods/quantumleap
-    ports:
-      - "8668:8668"
-    environment:      
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB_NAME=quantumleap
-      - POSTGRES_DB_USER=postgres
-      - POSTGRES_DB_PASS=p455w0rdD3v3l0p
-      - QL_CONFIG=/quantumleap.yaml
-    networks:
-      default:
-        aliases:
-          - quantumleap
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "20M"
-        max-file: "2"
-    volumes:
-      - ./quantum.yaml:/quantumleap.yaml
+  # quantumleap:
+  #   container_name: impetus-fiware-quantumleap
+  #   image: orchestracities/quantumleap:edge
+  #   # image: ods/quantumleap
+  #   ports:
+  #     - "8668:8668"
+  #   environment:      
+  #     - POSTGRES_HOST=postgres
+  #     - POSTGRES_PORT=5432
+  #     - POSTGRES_DB_NAME=quantumleap
+  #     - POSTGRES_DB_USER=postgres
+  #     - POSTGRES_DB_PASS=p455w0rdD3v3l0p
+  #     - QL_CONFIG=/quantumleap.yaml
+  #   networks:
+  #     default:
+  #       aliases:
+  #         - quantumleap
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "20M"
+  #       max-file: "2"
+  #   volumes:
+  #     - ./quantum.yaml:/quantumleap.yaml
   
   platform:
     build: 

@@ -20,7 +20,20 @@ class ContextParameter(BaseModel):
     context_key: str
     context_value: str
 
+## 
+class CatalogFilter(BaseModel):
+    name: str
+    id: str
+    owner: str
+    type: TypeCatalog
+    tags: List[str]
 
+class CatalogQueryRequest(BaseModel):
+    limit: int
+    page: int
+    filter: CatalogFilter
+
+##
 class CatalogRequest(BaseModel):
     catalog_id: List[str]
     catalog_owner: List[str]
@@ -86,6 +99,7 @@ class DataCatalogCreate(DataCatalogBase):
             )
 
             # Handle any additional relationships
+            # TODO: Check issue - could not be reassembling?
             extra_relations = {
                 key: value for key, value in fiware_body.items()
                 if key not in {
@@ -147,3 +161,8 @@ class DataCatalogCreate(DataCatalogBase):
             return fiware_obj
         except Exception as e:
             raise ValueError(f"Error converting DataCatalogCreate to Fiware format: {str(e)}")
+
+
+class CatalogQueryResponse(BaseModel):
+    size: int
+    entries: List[DataCatalogCreate]
