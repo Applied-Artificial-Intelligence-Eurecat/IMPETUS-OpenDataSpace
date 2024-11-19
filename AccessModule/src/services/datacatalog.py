@@ -27,7 +27,7 @@ def get_catalog(catalog_id: str) -> DataCatalogCreate:
 def get_catalogs(request: CatalogQueryRequest = None) -> List[DataCatalogCreate]:
     try:
         if request:
-            query_response = fiware_repository.get_entity(config.CATALOG_ENTITY, method= None, entities=request.filter.id)
+            query_response = fiware_repository.get_entity_full(config.CATALOG_ENTITY, method= None, query= request.get_q_filter())
         else:
             query_response = fiware_repository.get_entity(config.CATALOG_ENTITY, method= None)
         if query_response:

@@ -33,23 +33,26 @@ def get_specific_entity(entity_full_id: str):
     response = requests.get(url, headers=headers)
     return None if not response.ok else response
 
-def get_entity(type_id: str, method: str = "keyValues", entities: list[str] = None, fields: list[str] = ['*'], filters: dict = {}):
+def get_entity_full(type_id: str, method: str = "keyValues", fields: list[str] = ['*'], query: str = None):
     url = config.ORION_URL + config.ORION_PATH_GET
     headers = {"Link": f'<{config.FIWARE_CONTEXT}>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'}
 
-    ##TODO check ngsi-ld v1 entities filtering and PAGINATION
     params = []
     params.append(("type", type_id))
     if method:
         params.append(("options", method))
     if fields and len(fields) > 0 and "*" not in fields:
         params.append(("attrs", ','.join(fields)))
-    if entities:
-        params.append(("q", "name~=[" + ']|['.join(entities) + ']'))
-    # for filter in filters:
-    #     params.app
+    if query:
+        params.append(("q", query))
     response = requests.get(url=url, params=params, headers=headers)
     return None if not response.ok else response
+
+def get_entity(type_id: str, method: str = "keyValues", entities: list[str] = None, fields: list[str] = ['*'], filters: dict = {}):
+    if entities:
+        filters["name"] = entities
+    
+    get_entity_full(type_id, method, fields, "|".join([f"name~={entitie}" for entitie in entities]))
 
 def query_entity(type_id: str, entity_patterns:list[str], attributes: list[str] = None):
     url = config.ORION_URL + config.ORION_PATH_QUERY

@@ -27,13 +27,32 @@ class CatalogFilter(BaseModel):
     owner: str
     type: TypeCatalog
     tags: List[str]
+    def get_q_filter(self) -> str:
+        conditions = []
+
+        # Añadir condiciones para los atributos no nulos
+        if self.name:
+            conditions.append(f"name~={self.name}")
+        if self.id:
+            conditions.append(f"id~={self.id}")
+        if self.owner:
+            conditions.append(f"owner~={self.owner}")
+        if self.type:
+            conditions.append(f"catalog_type~={self.type}")
+        if self.tags and len(self.tags) > 0:
+            tag_conditions = "|".join([f"tag~={tag}" for tag in self.tags])
+            conditions.append(f"({tag_conditions})")
+
+        query = f"({')&('.join(conditions)})" if conditions else ""
+        return query
 
 class CatalogQueryRequest(BaseModel):
     limit: int
     page: int
     filter: CatalogFilter
+    def get_q_filter(self) -> str:
+        return self.filter.get_q_filter()
 
-##
 class CatalogRequest(BaseModel):
     catalog_id: List[str]
     catalog_owner: List[str]
