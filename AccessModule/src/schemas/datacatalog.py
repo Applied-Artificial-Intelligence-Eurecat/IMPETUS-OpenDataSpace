@@ -22,10 +22,10 @@ class ContextParameter(BaseModel):
 
 ## 
 class CatalogFilter(BaseModel):
-    name: str
-    id: str
-    owner: str
-    type: TypeCatalog
+    name: Optional[str]
+    id: Optional[str]
+    owner: Optional[str]
+    type: Optional[TypeCatalog]
     tags: List[str]
     def get_q_filter(self) -> str:
         conditions = []
@@ -38,7 +38,7 @@ class CatalogFilter(BaseModel):
         if self.owner:
             conditions.append(f"owner~={self.owner}")
         if self.type:
-            conditions.append(f"catalog_type~={self.type}")
+            conditions.append(f"catalog_type~={self.type.value}")
         if self.tags and len(self.tags) > 0:
             tag_conditions = "|".join([f"tag~={tag}" for tag in self.tags])
             conditions.append(f"({tag_conditions})")
