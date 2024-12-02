@@ -64,6 +64,7 @@ async def fetch_data(
         elif datacatalog.type in [TypeCatalog.TABLE, TypeCatalog.TIMESERIES]:
             content = table_to_csv(data)
         return Response(content, media_type="text/csv", headers={"Content-Disposition": "attachment; filename=data.csv"})
-
+    if not data:
+        raise HTTPException(status_code=400, detail="Query data does not match any available data")
     # Return the data in JSON format by default
     return data

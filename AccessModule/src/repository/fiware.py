@@ -45,11 +45,11 @@ def get_entity_full(type_id: str, method: str = "keyValues", fields: list[str] =
         params.append(("attrs", ','.join(fields)))
     if query:
         params.append(("q", query))
+    print(params)
     response = requests.get(url=url, params=params, headers=headers)
     return None if not response.ok else response
 
 def get_entity(type_id: str, method: str = "keyValues", entities: list[str] = None, fields: list[str] = ['*'], filters: dict = {}):
-    
     get_entity_full(type_id, method, fields, "|".join([f"name~={entitie}" for entitie in entities]) if entities and len(entities)>0 else None)
 
 def query_entity(type_id: str, entity_patterns:list[str], attributes: list[str] = None):
