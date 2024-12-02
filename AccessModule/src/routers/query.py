@@ -54,6 +54,8 @@ async def fetch_data(
     except DataCatalogNotFound as ex:
         # Raise HTTP 400 error if the catalog is not found
         raise HTTPException(status_code=400, detail=ex.args)
+    except ODSException as ex:
+        raise HTTPException(status_code=400, detail=ex.args)
 
     # Handle the output format, converting data to CSV if requested
     if data and form_data.output == OutputFormat.CSV:
